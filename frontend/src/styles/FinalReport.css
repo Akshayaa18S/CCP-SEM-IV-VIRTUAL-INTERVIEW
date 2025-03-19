@@ -1,0 +1,100 @@
+/* FinalReport.css */
+.report-container {
+    background: linear-gradient(135deg, #161625, #222244);
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+    max-width: 650px;
+    margin: 2rem auto;
+    text-align: center;
+  }
+  
+  /* Title */
+  .report-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #ffcc00;
+  }
+  
+  /* Score Circle */
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: conic-gradient(#ffcc00 var(--score, 85%), rgba(255, 255, 255, 0.1) 0%);
+    color: #fff;
+    margin: 1rem auto;
+    border: 4px solid #ffcc00;
+    animation: popIn 1s ease-in-out;
+  }
+  
+  /* Report Sections */
+  .report-section {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 8px;
+    text-align: left;
+  }
+  
+  .report-section h2 {
+    font-size: 1.3rem;
+    color: #ffcc00;
+  }
+  
+  .report-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .report-section li {
+    font-size: 1rem;
+    padding: 5px 0;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  /* Buttons */
+  .button-container {
+    margin-top: 20px;
+  }
+  
+  .download-btn,
+  .restart-btn {
+    background: #ffcc00;
+    color: #222;
+    padding: 10px 15px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 5px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .download-btn:hover,
+  .restart-btn:hover {
+    background: #ffaa00;
+    transform: scale(1.05);
+  }
+  
+  /* Animations */
+  @keyframes popIn {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
