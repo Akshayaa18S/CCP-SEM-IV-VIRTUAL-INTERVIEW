@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+firebase-admin
+openai
+numpy
+fastapi-cors
+nltk
+transformers
+pandas
