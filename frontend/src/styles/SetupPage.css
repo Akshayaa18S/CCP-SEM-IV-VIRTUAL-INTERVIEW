@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: rgba(30, 30, 30, 0.85);
+  background: linear-gradient(135deg, #0A0A1E, #1A1349);
   background-size: 400% 400%;
   color: white;
   text-align: center;

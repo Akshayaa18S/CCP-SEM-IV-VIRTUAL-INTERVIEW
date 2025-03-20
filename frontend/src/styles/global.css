@@ -1,0 +1,117 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+:root {
+  --primary-bg: linear-gradient(135deg, #0A0A1E, #1A1349);
+  --secondary-bg: linear-gradient(-45deg, #1A162E, #14102A, #0F0C1D, #2C225A);
+  --primary-color: #ffcc00;
+  --secondary-color: #E0E7FF;
+  --accent-color: #9333EA;
+  --text-color: white;
+  --font: "Poppins", sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text-color);
+  background: var(--primary-bg);
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Common Container Styling */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+/* Titles */
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* Buttons */
+.button {
+  background: linear-gradient(90deg, #4F46E5, var(--accent-color));
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 0px 12px rgba(147, 51, 234, 0.8);
+}
+
+/* Setup Page */
+.setup-container {
+  background: var(--primary-bg);
+}
+
+.setup-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Interview Page */
+.interview-container {
+  background: var(--secondary-bg);
+}
+
+.question-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+}
+
+/* Live Feedback */
+.feedback-container {
+  background: var(--primary-bg);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.transcription-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* Final Report */
+.report-container {
+  background: var(--primary-bg);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.score-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary-color) var(--score, 85%), rgba(255, 255, 255, 0.1) 0%);
+  color: var(--text-color);
+}
+.app-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 80px 20px; /* Adjust padding to prevent hiding under the header */
+  overflow-y: auto;
+}

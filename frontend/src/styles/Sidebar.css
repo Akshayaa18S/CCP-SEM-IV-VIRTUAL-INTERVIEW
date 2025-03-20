@@ -1,89 +1,159 @@
-/* 🎨 Sidebar Styling */
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    background: #181818;
-    color: #ffcc00;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-shadow: 4px 0px 10px rgba(255, 215, 0, 0.1);
-    transition: width 0.3s ease-in-out;
-    overflow: hidden;
-  }
-  
-  /* Sidebar Closed State */
-  .sidebar.closed {
-    width: 80px;
-    padding: 20px 10px;
-  }
-  
-  /* 🔘 Sidebar Items */
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px 20px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    color: #ffcc00;
-    transition: all 0.3s ease-in-out;
-    white-space: nowrap;
-  }
-  
-  /* Hide Text When Sidebar is Collapsed */
-  .sidebar.closed .sidebar-item {
-    justify-content: center;
-    padding: 12px;
-  }
-  
-  .sidebar.closed .sidebar-item span {
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.header {
+  background-color: #181818;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  font-family: "Poppins", sans-serif;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Logo Animation */
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  opacity: 0;
+  animation: fadeInLogo 0.8s ease-in-out forwards;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* Smooth Hover Effect */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  position: relative;
+  transition: color 0.3s ease-in-out;
+  padding: 10px;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -4px;
+  left: 50%;
+  background-color: #ffcc00;
+  transition: all 0.3s ease-in-out;
+  transform: translateX(-50%);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  color: #ffcc00;
+}
+
+/* Authentication Buttons */
+.auth-btn {
+  background: #ffcc00;
+  color: black;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-left: 10px;
+}
+
+.auth-btn:hover {
+  background: #e6b800;
+}
+
+/* Highlighted User Name */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.user-name {
+  font-weight: bold;
+  color: #ffcc00;
+  padding: 5px 10px;
+  background: rgba(255, 204, 0, 0.2);
+  border-radius: 5px;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  display: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* Mobile Menu Animation */
+@media (max-width: 768px) {
+  .nav-links {
     display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: #222;
+    width: 100%;
+    padding: 20px;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
-  
-  /* 🏠 Active Sidebar Item */
-  .sidebar-item.active {
-    background: linear-gradient(135deg, #ffcc00, #ff9900);
-    color: #121212;
-    transform: scale(1.1);
+
+  .nav-links.open {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
   }
-  
-  /* 🔄 Sidebar Icons */
-  .sidebar-icon {
-    font-size: 1.5rem;
-  }
-  
-  /* 🎭 Sidebar Animation */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .sidebar-item {
-    animation: slideIn 0.5s ease-in-out;
-  }
-  
-  /* 🚀 Sidebar Toggle Button */
+
   .toggle-btn {
-    background: transparent;
-    border: none;
-    color: #ffcc00;
-    font-size: 1.8rem;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: transform 0.3s ease-in-out;
+    display: block;
   }
-  
-  .toggle-btn:hover {
-    transform: scale(1.1);
+}
+
+/* Fade-in Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo Fade-in Delay */
+@keyframes fadeInLogo {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
