@@ -3,7 +3,7 @@ import os
 import json
 
 # ✅ Load Gemini API Key from environment variables
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY ="AIzaSyC7xxUSHtOLvuSttznesVCj1YLEwZSrWnY"
 
 if not GEMINI_API_KEY:
     raise ValueError("❌ Gemini API key is missing! Set GEMINI_API_KEY in environment variables.")
@@ -35,7 +35,7 @@ def generate_feedback(question: str, answer: str) -> dict:
     Do not include any extra text outside the JSON.
     """
 
-    model = genai.GenerativeModel("gemini-1.5-flash")  # ✅ Free Model
+    model = genai.GenerativeModel("gemini-1.5-flash") 
 
     try:
         response = model.generate_content(prompt)
