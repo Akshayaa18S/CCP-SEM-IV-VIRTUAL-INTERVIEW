@@ -19,7 +19,7 @@ const Header = () => {
       <nav className={`nav-links ${isOpen ? "open" : ""}`}>
         <Link to="/landing">Home</Link>
         <Link to="/report">Final Report</Link>
-        <Link to="/past-interviews">Past Interviews</Link>
+        
         {user ? (
           <>
             <span className="user-info">

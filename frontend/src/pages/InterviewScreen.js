@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import "../styles/InterviewScreen.css";
 
-// 🎯 20 Predefined Interview Questions
 const QUESTIONS = [
   "Tell me about yourself.",
   "What are your strengths and weaknesses?",
@@ -25,7 +24,7 @@ const QUESTIONS = [
   "What skills make you a good fit for this role?",
   "How do you stay updated in your field?",
   "What is your biggest professional achievement?",
-  "Do you have any questions for us?"
+  "Do you have any questions for us?",
 ];
 
 export function InterviewScreen() {
@@ -33,22 +32,37 @@ export function InterviewScreen() {
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [response, setResponse] = useState("");
-  const [responses, setResponses] = useState([]); // ✅ Stores all responses
+  const [responses, setResponses] = useState([]);
+  const [recordedAudio, setRecordedAudio] = useState(null);
+  const [responseAudio, setResponseAudio] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+
   const mediaRecorderRef = useRef(null);
   const audioChunks = useRef([]);
   const navigate = useNavigate();
 
-  // 🎯 Select 6 random questions on load
   useEffect(() => {
     const shuffled = [...QUESTIONS].sort(() => Math.random() - 0.5);
     setSelectedQuestions(shuffled.slice(0, 6));
+
+    const storedResponses = JSON.parse(localStorage.getItem("interviewResponses"));
+    if (storedResponses) {
+      setResponses(storedResponses);
+    }
   }, []);
 
-  // 🎤 Start Recording (Mic Input)
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100
+          }
+        });
+
       mediaRecorderRef.current = new MediaRecorder(stream);
+      audioChunks.current = [];
 
       mediaRecorderRef.current.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -63,14 +77,22 @@ export function InterviewScreen() {
     }
   };
 
-  // 🛑 Stop Recording & Send to Backend for Speech Processing
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
+
       mediaRecorderRef.current.onstop = async () => {
         const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+        audioChunks.current = [];
+
+        const audioUrl = URL.createObjectURL(audioBlob);
+        setRecordedAudio(audioUrl);
+        setResponseAudio(audioBlob);
+
+        // ✅ Fix: Convert Blob to File
+        const audioFile = new File([audioBlob], "recording.wav", { type: "audio/wav" });
         const formData = new FormData();
-        formData.append("audio", audioBlob);
+        formData.append("file", audioFile);
 
         try {
           const res = await fetch("http://127.0.0.1:8000/interview/transcribe", {
@@ -78,78 +100,79 @@ export function InterviewScreen() {
             body: formData,
           });
 
-          if (!res.ok) {
-            throw new Error(`Server error: ${res.status}`);
-          }
-
+          if (!res.ok) throw new Error(`Transcription server error: ${res.status}`);
           const data = await res.json();
-          setResponse(data.transcription);
+          setResponse(data.transcription || "⚠️ Could not transcribe audio");
         } catch (error) {
-          console.error("❌ Speech processing failed:", error);
+          console.error("❌ Transcription failed:", error);
         }
       };
+
       setIsRecording(false);
     }
   };
 
-  // 📤 Submit Response to Backend
+  const retryRecording = () => {
+    setRecordedAudio(null);
+    setResponseAudio(null);
+    setResponse("");
+    setFeedback(null);
+  };
+
   const submitResponse = async () => {
     if (!response.trim()) {
       alert("❗ Please enter a response before submitting.");
       return;
     }
 
-    try {
-      const question = selectedQuestions[currentQuestionIndex];
+    const question = selectedQuestions[currentQuestionIndex];
 
+    try {
       const res = await fetch("http://127.0.0.1:8000/interview/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, answer: response }),
       });
 
-      if (!res.ok) {
-        throw new Error(`Server error: ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Evaluation error: ${res.status}`);
 
       const data = await res.json();
-      console.log("✅ Evaluation:", data);
+      setFeedback(data.feedback);
 
-      // Store response in array
-      setResponses((prevResponses) => [
-        ...prevResponses,
-        { question, answer: response, score: data.score },
-      ]);
+      const updatedResponses = [
+        ...responses,
+        {
+          question,
+          answer: response,
+          textScore: data.textScore,
+          speechScore: data.speechScore || 0,
+          finalScore: data.finalScore || 0,
+        },
+      ];
 
-      // Move to next question or finish interview
+      setResponses(updatedResponses);
+      localStorage.setItem("interviewResponses", JSON.stringify(updatedResponses));
+
       if (currentQuestionIndex < selectedQuestions.length - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
         setResponse("");
-        audioChunks.current = [];
+        setRecordedAudio(null);
+        setResponseAudio(null);
+        setFeedback(null);
       } else {
-        // Send all responses to final report
-        fetch("http://127.0.0.1:8000/interview/final_report", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ responses }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            console.log("✅ Final Report Data:", data);
-            localStorage.setItem("finalReport", JSON.stringify(data));
-            navigate("/report");
-          })
-          .catch((error) => console.error("❌ Final Report Error:", error));
+        navigate("/report");
       }
     } catch (error) {
-      console.error("❌ Error evaluating response:", error);
+      console.error("❌ Evaluation failed:", error);
     }
   };
 
   return (
     <div className="interview-container">
       <motion.div className="question-box">
-        {selectedQuestions.length > 0 ? selectedQuestions[currentQuestionIndex] : "Loading questions..."}
+        {selectedQuestions.length > 0
+          ? selectedQuestions[currentQuestionIndex]
+          : "Loading questions..."}
       </motion.div>
 
       <div className="input-section">
@@ -168,6 +191,20 @@ export function InterviewScreen() {
           onChange={(e) => setResponse(e.target.value)}
         />
       </div>
+
+      {recordedAudio && (
+        <div className="audio-preview">
+          <audio controls src={recordedAudio} />
+          <button onClick={retryRecording}>🔁 Retry</button>
+        </div>
+      )}
+
+      {feedback && (
+        <div className="feedback-box">
+          <h4>💬 Feedback:</h4>
+          <p>{feedback}</p>
+        </div>
+      )}
 
       <div className="button-container">
         <motion.button className="submit-btn" onClick={submitResponse}>

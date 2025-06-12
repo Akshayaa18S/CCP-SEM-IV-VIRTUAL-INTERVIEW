@@ -32,15 +32,13 @@ export function LandingPage() {
       </motion.p>
 
       {/* AI Illustration */}
-      <motion.img
-        src="/ai-illustration.png"
-        alt="AI Interview Illustration"
-        className="ai-illustration floating"
+      <div  className="ai-illustration floating"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1, ease: "easeInOut" }}
-        whileHover={{ scale: 1.05 }}
-      />
+        whileHover={{ scale: 1.05 }} >
+          Click below to analzye yourself
+        </div>
 
       {/* CTA Button */}
       <motion.div

@@ -20,25 +20,30 @@ export function FinalReport() {
       return;
     }
 
-    // ✅ Fetch Final Report from Backend
+    // Fetch AI Final Report
     fetch("http://127.0.0.1:8000/feedback/interview/final_report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ responses: storedResponses }),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Server error");
+        return res.json();
+      })
       .then((data) => {
-        setScore(data.scorePercentage);
-        setFinalFeedback(data.finalFeedback);
+        const roundedScore = Math.round(data.scorePercentage || 0);
+
+        setScore(roundedScore);
+        setFinalFeedback(data.finalFeedback || "No final feedback provided.");
         setSuggestions(data.suggestions || "No suggestions available.");
         setLoading(false);
 
-        // ✅ Save to Firebase if user is logged in
+        // Save to Firebase
         auth.onAuthStateChanged((currentUser) => {
           if (currentUser) {
             setUser(currentUser);
             saveInterviewReport(currentUser.uid, {
-              score: data.scorePercentage,
+              score: roundedScore,
               finalFeedback: data.finalFeedback,
               suggestions: data.suggestions,
               timestamp: new Date(),
@@ -96,7 +101,6 @@ export function FinalReport() {
 
       {/* Buttons */}
       <div className="button-container">
-        
         <motion.button
           className="restart-btn"
           whileHover={{ scale: 1.1 }}
